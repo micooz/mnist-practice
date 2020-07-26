@@ -2,7 +2,7 @@
   "scripts": {
     "watch": "tsc -w",
     "build": "rm -rf lib && tsc",
-    "start": "node lib/index.js",
+    "start:cnn": "node lib/cnn/main.js",
     "postinstall": "npm run build"
   },
   "dependencies": {

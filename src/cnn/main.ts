@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as tf from '@tensorflow/tfjs-node';
-import * as dataset from './dataset';
+import * as dataset from '../dataset';
 import createModel from './model';
 
 // tf.enableProdMode();
