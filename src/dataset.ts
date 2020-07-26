@@ -2,11 +2,11 @@ import * as fs from 'fs';
 import * as tf from '@tensorflow/tfjs-node';
 // import * as utils from './utils';
 
-function getData(rawImagesFile: string, rawLabelsFile: string) {
+function getData(rawImagesFile: string, rawLabelsFile: string, num?: number) {
   let rawImageBuf = fs.readFileSync(rawImagesFile);
   let rawLabelBuf = fs.readFileSync(rawLabelsFile);
 
-  const imagesNum = rawImageBuf.readUInt32BE(4);
+  const imagesNum = num || rawImageBuf.readUInt32BE(4);
   const imageWidth = rawImageBuf.readInt32BE(8);
   const imageHeight = rawImageBuf.readInt32BE(12);
 
@@ -30,7 +30,7 @@ function getData(rawImagesFile: string, rawLabelsFile: string) {
     images.push(image);
     labels.push(label);
 
-    // utils.saveImage('xxx', image, imageWidth, imageHeight);
+    // utils.saveImage(`${i}-${label}`, image, imageWidth, imageHeight);
   }
 
   return [
@@ -39,16 +39,18 @@ function getData(rawImagesFile: string, rawLabelsFile: string) {
   ];
 }
 
-export function getTrainData() {
+export function getTrainData(num?: number) {
   return getData(
     'mnist/train-images-idx3-ubyte',
     'mnist/train-labels-idx1-ubyte',
+    num,
   );
 }
 
-export function getTestData() {
+export function getTestData(num?: number) {
   return getData(
     'mnist/t10k-images-idx3-ubyte',
     'mnist/t10k-labels-idx1-ubyte',
+    num,
   );
 }

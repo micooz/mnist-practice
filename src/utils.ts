@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import Bmp from 'binary-bmp';
+import * as Bmp from 'binary-bmp';
 
 export function saveImage(
   name: string,
@@ -13,7 +13,7 @@ export function saveImage(
     height,
   });
 
-  const filename = `${name}.bmp`;
+  const filename = `tmp/${name}.bmp`;
 
   console.log(`write ${filename}`);
 

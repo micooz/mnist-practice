@@ -9,6 +9,7 @@
     "sourceMap": false,
     "declaration": true,
     "skipDefaultLibCheck": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "esModuleInterop": true
   }
 }
