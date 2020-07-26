@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "watch": "tsc -w",
+    "build": "rm -rf lib && tsc",
+    "start": "node lib/index.js",
+    "postinstall": "npm run build"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^2.0.1",
+    "binary-bmp": "0.0.3"
+  },
+  "devDependencies": {
+    "@types/bmp-js": "^0.1.0",
+    "typescript": "^3.9.7"
+  }
+}

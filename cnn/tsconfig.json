@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "lib",
+    "noImplicitAny": true,
+    "removeComments": false,
+    "sourceMap": false,
+    "declaration": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true
+  }
+}
