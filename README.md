@@ -6,3 +6,4 @@ Trying to solve the mnist problem using multiple machine learning methods.
 
 * npm install
 * npm run start:cnn
+* npm run start:knn
