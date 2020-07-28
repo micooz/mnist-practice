@@ -4,9 +4,11 @@
     "build": "rm -rf lib && tsc",
     "start:cnn": "node lib/cnn/main.js",
     "start:knn": "node lib/knn/main.js",
+    "start:knn2": "node lib/knn2/main.js",
     "postinstall": "npm run build"
   },
   "dependencies": {
+    "@tensorflow-models/knn-classifier": "^1.2.2",
     "@tensorflow/tfjs-node": "^2.0.1",
     "binary-bmp": "0.0.3",
     "lodash": "^4.17.19"
