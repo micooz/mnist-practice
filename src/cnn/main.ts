@@ -5,6 +5,8 @@ import createModel from './model';
 
 // tf.enableProdMode();
 
+const MODEL_PATH = 'file://model/cnn';
+
 function compileModel(model: tf.LayersModel) {
   model.compile({
     optimizer: 'adam',
@@ -26,7 +28,7 @@ async function train() {
     validationSplit: 0.15,
   });
 
-  await model.save('file://model');
+  await model.save(MODEL_PATH);
 
   fs.writeFileSync(
     'model/history.json',
@@ -38,7 +40,7 @@ async function train() {
 async function test() {
   const [images, labels] = dataset.getTestData();
 
-  const model = await tf.loadLayersModel('file://model/model.json');
+  const model = await tf.loadLayersModel(`${MODEL_PATH}/model.json`);
   compileModel(model);
 
   const evalOutput = model.evaluate(images, labels) as tf.Scalar[];
