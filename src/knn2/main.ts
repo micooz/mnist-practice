@@ -3,11 +3,10 @@ import { getTrainData, getTestData } from '../dataset';
 
 const classifier = knnClassifier.create();
 
-const [trainImages, trainLabels] = getTrainData();
+const [trainImages, trainLabels] = getTrainData(1000);
 const [testImages, testLabels] = getTestData();
 
-// for (let i = 0; i < trainImages.shape[0]; i++) {
-for (let i = 0; i < 1000; i++) {
+for (let i = 0; i < trainImages.shape[0]; i++) {
   const trainImage = trainImages.slice(i, 1).flatten();
   const trainLabel = trainLabels.slice(i, 1).flatten().argMax(0).dataSync()[0];
 
@@ -21,7 +20,6 @@ async function main() {
   let acc = '0.000';
   let correctNum = 0;
   for (let i = 0; i < testImages.shape[0]; i++) {
-    // for (let i = 0; i < 100; i++) {
     const testImage = testImages.slice(i, 1).flatten();
     const testLabel = testLabels.slice(i, 1).flatten().argMax(0).dataSync()[0];
 

@@ -2,14 +2,15 @@ import * as tf from '@tensorflow/tfjs-node';
 import lodash from 'lodash';
 import { getTrainData, getTestData } from '../dataset';
 
-const [testImages, testLabels] = getTestData(10);
-const [trainImages, trainLabels] = getTrainData(2000);
+const [trainImages, trainLabels] = getTrainData(1000);
+const [testImages, testLabels] = getTestData();
 
 // trainLabels.argMax(1).print();
 
 const K = 5;
 
-let acc = 0;
+let acc = '0.000';
+let correctNum = 0;
 
 let labels: number[] = [];
 let predictions: number[] = [];
@@ -53,7 +54,8 @@ for (let i = 0; i < testImages.shape[0]; i++) {
   // console.log({ predictLabel, actualLabel });
 
   if (prediction === actualLabel) {
-    acc += 1 / testImages.shape[0];
+    correctNum += 1;
+    acc = (correctNum / (i + 1)).toFixed(3);
   }
 
   predictions.push(prediction);
@@ -71,5 +73,5 @@ function printLog() {
     tf.tensor(labels),
     tf.tensor(predictions),
   );
-  console.log(`loss = ${mse.dataSync()[0]}, acc = ${acc.toFixed(3)}`);
+  console.log(`loss = ${mse.dataSync()[0].toFixed(3)}, acc = ${acc}`);
 }
