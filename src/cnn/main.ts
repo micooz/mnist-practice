@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import * as tf from '@tensorflow/tfjs-node';
 import * as dataset from '../dataset';
 import createModel from './model';
@@ -22,19 +21,14 @@ async function train() {
   compileModel(model);
   model.summary();
 
-  const { history } = await model.fit(images, labels, {
+  await model.fit(images, labels, {
     epochs: 5,
     batchSize: 32,
     validationSplit: 0.15,
+    callbacks: tf.node.tensorBoard('model/cnn/fit_logs/'),
   });
 
   await model.save(MODEL_PATH);
-
-  fs.writeFileSync(
-    'model/history.json',
-    JSON.stringify(history, null, 2),
-    'utf8',
-  );
 }
 
 async function test() {
