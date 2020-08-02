@@ -23,18 +23,22 @@ export function entropy(dataset: DataSet) {
   return -sum;
 }
 
-// information gain
+// information gain (ID3 & C4.5)
 export function gain(dataset: DataSet, featureMeta: FeatureMeta, prevEnt: number) {
   const dsMap = divide(dataset, featureMeta);
 
-  const ent = [...dsMap.values()].reduce((acc, next) => {
+  const [ent, iv] = [...dsMap.values()].reduce((acc, next) => {
     const weight = next.length / dataset.length
-    acc += weight * entropy(next);
+    acc[0] += weight * entropy(next); // ID3
+    acc[1] -= weight * Math.log2(weight); // C4.5
     return acc;
-  }, 0);
+  }, [0, 0]);
+
+  const gainValue = prevEnt - ent;
 
   return {
-    value: prevEnt - ent,
+    gain: gainValue,
+    gainRatio: gainValue / iv, // intrinsic value
     dsMap,
   };
 }

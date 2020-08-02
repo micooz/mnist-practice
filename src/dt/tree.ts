@@ -14,7 +14,11 @@ type Branch = {
   node: Node;
 };
 
-export function createTree(dataset: DataSet, featureMetas: FeatureMeta[]): Node {
+export function createTree(
+  dataset: DataSet,
+  featureMetas: FeatureMeta[],
+  algorithm: 'ID3' | 'C45',
+): Node {
   if (featureMetas.length === 0) {
     return createLeafNode(getMaxLabel(dataset));
   }
@@ -25,33 +29,30 @@ export function createTree(dataset: DataSet, featureMetas: FeatureMeta[]): Node 
     return createLeafNode(labelSet.values().next().value);
   }
 
-  const ent = utils.entropy(dataset);
-  // console.log(ent);
+  let gainResult;
 
-  let maxGain = 0;
-  let resultFeatureMeta: FeatureMeta = null;
-  let resultDsMap: Map<DataValue, DataSet> = new Map();
+  switch (algorithm) {
+    case 'ID3':
+      gainResult = divideByID3(dataset, featureMetas);
+      break;
+    case 'C45':
+      gainResult = divideByC45(dataset, featureMetas);
+      break;
+    default:
+      throw `unsupported algorithm: ${algorithm}`;
+  }
 
-  // find best divide point
-  featureMetas.forEach(meta => {
-    const { value, dsMap } = utils.gain(dataset, meta, ent);
-
-    if (value > maxGain) {
-      maxGain = value;
-      resultFeatureMeta = meta;
-      resultDsMap = dsMap;
-    }
-  });
+  const { meta, result: { gain, gainRatio, dsMap } } = gainResult;
 
   const node: Node = {};
-  node.featureMeta = resultFeatureMeta;
-  node.branches = [...resultDsMap.entries()].map(([featureValue, ds]) => {
+  node.featureMeta = meta;
+  node.branches = [...dsMap.entries()].map(([featureValue, ds]) => {
     const newFeatureMetas =
-      featureMetas.filter(meta => meta.name !== resultFeatureMeta.name);
+      featureMetas.filter(item => item.name !== meta.name);
 
     return {
       featureValue,
-      node: createTree(ds, newFeatureMetas),
+      node: createTree(ds, newFeatureMetas, algorithm),
     };
   });
 
@@ -90,6 +91,37 @@ export function predict(tree: Node, features: Features): DataValue {
   }
 
   return null;
+}
+
+function divideByID3(dataset: DataSet, featureMetas: FeatureMeta[]) {
+  const ent = utils.entropy(dataset);
+
+  const gainResults = featureMetas
+    .map(meta => ({ meta, result: utils.gain(dataset, meta, ent) }));
+
+  // sort by gain desc
+  gainResults.sort((a, b) => b.result.gain - a.result.gain);
+
+  // the max gain
+  return gainResults[0];
+}
+
+function divideByC45(dataset: DataSet, featureMetas: FeatureMeta[]) {
+  const ent = utils.entropy(dataset);
+
+  const gainResults = featureMetas
+    .map(meta => ({ meta, result: utils.gain(dataset, meta, ent) }));
+
+  // sort by gain desc
+  gainResults.sort((a, b) => b.result.gain - a.result.gain);
+
+  // calculate the average gain
+  const gainSum = lodash.sumBy(gainResults, item => item.result.gain);
+  const gainAvg = gainSum / gainResults.length;
+
+  return gainResults
+    .filter(item => item.result.gain >= gainAvg)
+    .sort((a, b) => b.result.gainRatio - a.result.gainRatio)[0];
 }
 
 function createLeafNode(label: DataValue): Node {

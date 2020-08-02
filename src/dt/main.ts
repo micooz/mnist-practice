@@ -4,7 +4,8 @@ import * as tf from '@tensorflow/tfjs-node';
 import { DataSet, DataItem, FeatureMeta } from './types';
 import * as tree from './tree';
 
-const MODEL_PATH = 'model/dt/model.json';
+const ALGORITHM = 'ID3';
+const MODEL_PATH = `model/dt/model-${ALGORITHM}.json`;
 
 async function getDataset(): Promise<{ dataset: DataSet; featureMetas: FeatureMeta[]; }> {
   const csvDataset = tf.data.csv('file://src/dt/watermelon2.0.csv', {
@@ -45,7 +46,7 @@ async function train() {
   const { dataset, featureMetas } = await getDataset();
   // console.log(dataset);
 
-  const model = tree.createTree(dataset, featureMetas);
+  const model = tree.createTree(dataset, featureMetas, ALGORITHM);
 
   fs.writeFileSync(
     MODEL_PATH,
