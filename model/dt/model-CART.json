@@ -1,0 +1,138 @@
+{
+  "featureMeta": {
+    "name": "纹理",
+    "type": "discrete",
+    "enums": [
+      "清晰",
+      "稍糊",
+      "模糊"
+    ]
+  },
+  "branches": [
+    {
+      "featureValue": "清晰",
+      "node": {
+        "featureMeta": {
+          "name": "根蒂",
+          "type": "discrete",
+          "enums": [
+            "蜷缩",
+            "稍蜷",
+            "硬挺"
+          ]
+        },
+        "branches": [
+          {
+            "featureValue": "蜷缩",
+            "node": {
+              "leaf": true,
+              "label": "是"
+            }
+          },
+          {
+            "featureValue": "稍蜷",
+            "node": {
+              "featureMeta": {
+                "name": "色泽",
+                "type": "discrete",
+                "enums": [
+                  "青绿",
+                  "乌黑",
+                  "浅白"
+                ]
+              },
+              "branches": [
+                {
+                  "featureValue": "青绿",
+                  "node": {
+                    "leaf": true,
+                    "label": "是"
+                  }
+                },
+                {
+                  "featureValue": "乌黑",
+                  "node": {
+                    "featureMeta": {
+                      "name": "触感",
+                      "type": "discrete",
+                      "enums": [
+                        "硬滑",
+                        "软粘"
+                      ]
+                    },
+                    "branches": [
+                      {
+                        "featureValue": "硬滑",
+                        "node": {
+                          "leaf": true,
+                          "label": "是"
+                        }
+                      },
+                      {
+                        "featureValue": "软粘",
+                        "node": {
+                          "leaf": true,
+                          "label": "否"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "featureValue": "浅白",
+                  "node": {
+                    "leaf": true,
+                    "label": "是"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "featureValue": "硬挺",
+            "node": {
+              "leaf": true,
+              "label": "否"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "featureValue": "稍糊",
+      "node": {
+        "featureMeta": {
+          "name": "触感",
+          "type": "discrete",
+          "enums": [
+            "硬滑",
+            "软粘"
+          ]
+        },
+        "branches": [
+          {
+            "featureValue": "软粘",
+            "node": {
+              "leaf": true,
+              "label": "是"
+            }
+          },
+          {
+            "featureValue": "硬滑",
+            "node": {
+              "leaf": true,
+              "label": "否"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "featureValue": "模糊",
+      "node": {
+        "leaf": true,
+        "label": "否"
+      }
+    }
+  ]
+}

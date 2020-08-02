@@ -17,7 +17,7 @@ type Branch = {
 export function createTree(
   dataset: DataSet,
   featureMetas: FeatureMeta[],
-  algorithm: 'ID3' | 'C45',
+  algorithm: 'ID3' | 'C45' | 'CART',
 ): Node {
   if (featureMetas.length === 0) {
     return createLeafNode(getMaxLabel(dataset));
@@ -29,20 +29,23 @@ export function createTree(
     return createLeafNode(labelSet.values().next().value);
   }
 
-  let gainResult;
+  let divideResult;
 
   switch (algorithm) {
     case 'ID3':
-      gainResult = divideByID3(dataset, featureMetas);
+      divideResult = divideByID3(dataset, featureMetas);
       break;
     case 'C45':
-      gainResult = divideByC45(dataset, featureMetas);
+      divideResult = divideByC45(dataset, featureMetas);
+      break;
+    case 'CART':
+      divideResult = divideByCart(dataset, featureMetas);
       break;
     default:
       throw `unsupported algorithm: ${algorithm}`;
   }
 
-  const { meta, result: { gain, gainRatio, dsMap } } = gainResult;
+  const { meta, dsMap } = divideResult;
 
   const node: Node = {};
   node.featureMeta = meta;
@@ -97,31 +100,45 @@ function divideByID3(dataset: DataSet, featureMetas: FeatureMeta[]) {
   const ent = utils.entropy(dataset);
 
   const gainResults = featureMetas
-    .map(meta => ({ meta, result: utils.gain(dataset, meta, ent) }));
-
-  // sort by gain desc
-  gainResults.sort((a, b) => b.result.gain - a.result.gain);
+    .map(meta => ({ meta, result: utils.gain(dataset, meta, ent) }))
+    // sort by gain desc
+    .sort((a, b) => b.result.gain - a.result.gain);
 
   // the max gain
-  return gainResults[0];
+  const { meta, result: { dsMap } } = gainResults[0];
+
+  return { meta, dsMap };
 }
 
 function divideByC45(dataset: DataSet, featureMetas: FeatureMeta[]) {
   const ent = utils.entropy(dataset);
 
   const gainResults = featureMetas
-    .map(meta => ({ meta, result: utils.gain(dataset, meta, ent) }));
-
-  // sort by gain desc
-  gainResults.sort((a, b) => b.result.gain - a.result.gain);
+    .map(meta => ({ meta, result: utils.gain(dataset, meta, ent) }))
+    // sort by gain desc
+    .sort((a, b) => b.result.gain - a.result.gain);
 
   // calculate the average gain
   const gainSum = lodash.sumBy(gainResults, item => item.result.gain);
   const gainAvg = gainSum / gainResults.length;
 
-  return gainResults
+  // the max gain ratio
+  const { meta, result: { dsMap } } = gainResults
     .filter(item => item.result.gain >= gainAvg)
     .sort((a, b) => b.result.gainRatio - a.result.gainRatio)[0];
+
+  return { meta, dsMap };
+}
+
+function divideByCart(dataset: DataSet, featureMetas: FeatureMeta[]) {
+  const gainResults = featureMetas
+    .map(meta => ({ meta, result: utils.giniIndex(dataset, meta) }))
+    .sort((a, b) => a.result.giniIndex - b.result.giniIndex);
+
+  // the mini gini index
+  const { meta, result: { dsMap } } = gainResults[0];
+
+  return { meta, dsMap };
 }
 
 function createLeafNode(label: DataValue): Node {
