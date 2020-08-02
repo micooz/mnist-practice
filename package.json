@@ -5,6 +5,7 @@
     "start:cnn": "node lib/cnn/main.js",
     "start:knn": "node lib/knn/main.js",
     "start:knn2": "node lib/knn2/main.js",
+    "start:dt": "node lib/dt/main.js",
     "postinstall": "npm run build"
   },
   "dependencies": {

@@ -1,0 +1,93 @@
+{
+  "featureName": "纹理",
+  "branches": [
+    {
+      "featureValue": "清晰",
+      "node": {
+        "featureName": "根蒂",
+        "branches": [
+          {
+            "featureValue": "蜷缩",
+            "node": {
+              "leaf": true,
+              "label": "是"
+            }
+          },
+          {
+            "featureValue": "稍蜷",
+            "node": {
+              "featureName": "色泽",
+              "branches": [
+                {
+                  "featureValue": "青绿",
+                  "node": {
+                    "leaf": true,
+                    "label": "是"
+                  }
+                },
+                {
+                  "featureValue": "乌黑",
+                  "node": {
+                    "featureName": "触感",
+                    "branches": [
+                      {
+                        "featureValue": "硬滑",
+                        "node": {
+                          "leaf": true,
+                          "label": "是"
+                        }
+                      },
+                      {
+                        "featureValue": "软粘",
+                        "node": {
+                          "leaf": true,
+                          "label": "否"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "featureValue": "硬挺",
+            "node": {
+              "leaf": true,
+              "label": "否"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "featureValue": "稍糊",
+      "node": {
+        "featureName": "触感",
+        "branches": [
+          {
+            "featureValue": "软粘",
+            "node": {
+              "leaf": true,
+              "label": "是"
+            }
+          },
+          {
+            "featureValue": "硬滑",
+            "node": {
+              "leaf": true,
+              "label": "否"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "featureValue": "模糊",
+      "node": {
+        "leaf": true,
+        "label": "否"
+      }
+    }
+  ]
+}

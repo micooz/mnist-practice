@@ -36,6 +36,7 @@ function getData(rawImagesFile: string, rawLabelsFile: string, num?: number) {
   return [
     tf.tensor(images, [imagesNum, imageWidth, imageHeight, 1]).div(255).sub(0.5),
     tf.oneHot(labels, 10),
+    // tf.tensor1d(labels),
   ];
 }
 
