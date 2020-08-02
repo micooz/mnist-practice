@@ -1,10 +1,26 @@
 {
-  "featureName": "纹理",
+  "featureMeta": {
+    "name": "纹理",
+    "type": "discrete",
+    "enums": [
+      "清晰",
+      "稍糊",
+      "模糊"
+    ]
+  },
   "branches": [
     {
       "featureValue": "清晰",
       "node": {
-        "featureName": "根蒂",
+        "featureMeta": {
+          "name": "根蒂",
+          "type": "discrete",
+          "enums": [
+            "蜷缩",
+            "稍蜷",
+            "硬挺"
+          ]
+        },
         "branches": [
           {
             "featureValue": "蜷缩",
@@ -16,7 +32,15 @@
           {
             "featureValue": "稍蜷",
             "node": {
-              "featureName": "色泽",
+              "featureMeta": {
+                "name": "色泽",
+                "type": "discrete",
+                "enums": [
+                  "青绿",
+                  "乌黑",
+                  "浅白"
+                ]
+              },
               "branches": [
                 {
                   "featureValue": "青绿",
@@ -28,7 +52,14 @@
                 {
                   "featureValue": "乌黑",
                   "node": {
-                    "featureName": "触感",
+                    "featureMeta": {
+                      "name": "触感",
+                      "type": "discrete",
+                      "enums": [
+                        "硬滑",
+                        "软粘"
+                      ]
+                    },
                     "branches": [
                       {
                         "featureValue": "硬滑",
@@ -45,6 +76,13 @@
                         }
                       }
                     ]
+                  }
+                },
+                {
+                  "featureValue": "浅白",
+                  "node": {
+                    "leaf": true,
+                    "label": "是"
                   }
                 }
               ]
@@ -63,7 +101,14 @@
     {
       "featureValue": "稍糊",
       "node": {
-        "featureName": "触感",
+        "featureMeta": {
+          "name": "触感",
+          "type": "discrete",
+          "enums": [
+            "硬滑",
+            "软粘"
+          ]
+        },
         "branches": [
           {
             "featureValue": "软粘",

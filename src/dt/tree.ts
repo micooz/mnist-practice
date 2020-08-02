@@ -1,20 +1,21 @@
-import { DataSet, DataValue, Features } from './types';
+import lodash from 'lodash';
+import { DataSet, DataValue, Features, FeatureMeta } from './types';
 import * as utils from './utils';
 
-class Node {
-  featureName: string;
-  branches: Branch[];
+type Node = {
+  featureMeta?: FeatureMeta;
+  branches?: Branch[];
   leaf?: true;
   label?: DataValue;
-}
+};
 
-class Branch {
+type Branch = {
   featureValue: DataValue;
   node: Node;
-}
+};
 
-export function createTree(dataset: DataSet, featureNames: string[]) {
-  if (featureNames.length === 0) {
+export function createTree(dataset: DataSet, featureMetas: FeatureMeta[]): Node {
+  if (featureMetas.length === 0) {
     return createLeafNode(getMaxLabel(dataset));
   }
 
@@ -24,57 +25,60 @@ export function createTree(dataset: DataSet, featureNames: string[]) {
     return createLeafNode(labelSet.values().next().value);
   }
 
-  const node = new Node();
-
   const ent = utils.entropy(dataset);
   // console.log(ent);
 
   let maxGain = 0;
-  let resultFeatureName = '';
+  let resultFeatureMeta: FeatureMeta = null;
   let resultDsMap: Map<DataValue, DataSet> = new Map();
 
   // find best divide point
-  featureNames.forEach(name => {
-    const { value, dsMap } = utils.gain(dataset, name, ent);
+  featureMetas.forEach(meta => {
+    const { value, dsMap } = utils.gain(dataset, meta, ent);
 
     if (value > maxGain) {
       maxGain = value;
-      resultFeatureName = name;
+      resultFeatureMeta = meta;
       resultDsMap = dsMap;
     }
   });
 
-  node.featureName = resultFeatureName;
+  const node: Node = {};
+  node.featureMeta = resultFeatureMeta;
   node.branches = [...resultDsMap.entries()].map(([featureValue, ds]) => {
-    const newFeatureNames =
-      featureNames.filter(name => name !== resultFeatureName);
+    const newFeatureMetas =
+      featureMetas.filter(meta => meta.name !== resultFeatureMeta.name);
 
-    const branch = new Branch();
-    branch.featureValue = featureValue;
-    branch.node = createTree(ds, newFeatureNames);
-
-    return branch;
+    return {
+      featureValue,
+      node: createTree(ds, newFeatureMetas),
+    };
   });
 
-  // TODO: complement feature values of featureName
-  // if (node.featureName === '色泽') {
-  //   const branch = new Branch();
-  //   branch.featureValue = '浅白';
-  //   branch.node = createLeafNode(getMaxLabel(dataset));
-  //   node.branches.push(branch);
-  // }
+  // complement feature values
+  const diff = lodash.difference(
+    node.featureMeta.enums || [],
+    node.branches.map(item => item.featureValue),
+  );
+
+  diff.forEach(value => {
+    node.branches.push({
+      featureValue: value,
+      node: createLeafNode(getMaxLabel(dataset)),
+    });
+  });
 
   return node;
 }
 
 export function predict(tree: Node, features: Features): DataValue {
-  const { featureName, branches, leaf, label } = tree;
+  const { featureMeta, branches, leaf, label } = tree;
 
   if (leaf) {
     return label;
   }
 
-  const featureValue = features[featureName];
+  const featureValue = features[featureMeta.name];
   if (!featureValue) {
     return null;
   }
@@ -88,11 +92,11 @@ export function predict(tree: Node, features: Features): DataValue {
   return null;
 }
 
-function createLeafNode(label: DataValue) {
-  const node = new Node();
-  node.leaf = true;
-  node.label = label;
-  return node;
+function createLeafNode(label: DataValue): Node {
+  return {
+    leaf: true,
+    label,
+  };
 }
 
 function getMaxLabel(dataset: DataSet) {

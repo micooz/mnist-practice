@@ -1,4 +1,4 @@
-import { DataSet, DataValue } from './types';
+import { DataSet, DataValue, FeatureMeta } from './types';
 
 // information entropy
 export function entropy(dataset: DataSet) {
@@ -24,8 +24,8 @@ export function entropy(dataset: DataSet) {
 }
 
 // information gain
-export function gain(dataset: DataSet, featureName: string, prevEnt: number) {
-  const dsMap = divide(dataset, featureName);
+export function gain(dataset: DataSet, featureMeta: FeatureMeta, prevEnt: number) {
+  const dsMap = divide(dataset, featureMeta);
 
   const ent = [...dsMap.values()].reduce((acc, next) => {
     const weight = next.length / dataset.length
@@ -39,12 +39,12 @@ export function gain(dataset: DataSet, featureName: string, prevEnt: number) {
   };
 }
 
-function divide(dataset: DataSet, featureName: string) {
+function divide(dataset: DataSet, featureMeta: FeatureMeta) {
   const dsMap = new Map<DataValue, DataSet>();
 
   for (const item of dataset) {
     const { features } = item;
-    const featureValue = features[featureName];
+    const featureValue = features[featureMeta.name];
 
     const ds = dsMap.get(featureValue);
     if (!ds) {

@@ -8,3 +8,9 @@ export type DataItem = {
 };
 
 export type DataSet = DataItem[];
+
+export type FeatureMeta = {
+  name: string;
+  type: 'discrete' | 'continuous';
+  enums?: DataValue[];
+};
