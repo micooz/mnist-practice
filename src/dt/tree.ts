@@ -60,17 +60,19 @@ export function createTree(
   });
 
   // complement feature values
-  const diff = lodash.difference(
-    node.featureMeta.enums || [],
-    node.branches.map(item => item.featureValue),
-  );
+  if (node.featureMeta.type === 'discrete') {
+    const diff = lodash.difference(
+      node.featureMeta.enums || [],
+      node.branches.map(item => item.featureValue),
+    );
 
-  diff.forEach(value => {
-    node.branches.push({
-      featureValue: value,
-      node: createLeafNode(getMaxLabel(dataset)),
+    diff.forEach(value => {
+      node.branches.push({
+        featureValue: value,
+        node: createLeafNode(getMaxLabel(dataset)),
+      });
     });
-  });
+  }
 
   return node;
 }

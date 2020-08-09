@@ -16,7 +16,7 @@ export function gain(dataset: DataSet, featureMeta: FeatureMeta, prevEnt: number
   const dsMap = divide(dataset, featureMeta);
 
   const [ent, iv] = [...dsMap.values()].reduce((acc, next) => {
-    const weight = next.length / dataset.length
+    const weight = next.length / dataset.length;
     acc[0] += weight * entropy(next); // ID3
     acc[1] -= weight * Math.log2(weight); // C4.5
     return acc;
@@ -36,7 +36,7 @@ export function giniIndex(dataset: DataSet, featureMeta: FeatureMeta) {
   const dsMap = divide(dataset, featureMeta);
 
   const giniIndex = [...dsMap.values()].reduce((acc, next) => {
-    const weight = next.length / dataset.length
+    const weight = next.length / dataset.length;
     acc += weight * gini(next);
     return acc;
   }, 0);
@@ -64,14 +64,15 @@ function pks(dataset: DataSet) {
 
 function divide(dataset: DataSet, featureMeta: FeatureMeta) {
   const dsMap = new Map<DataValue, DataSet>();
+  const { name, type } = featureMeta;
+
 
   for (const item of dataset) {
-    const { features } = item;
-    const featureValue = features[featureMeta.name];
+    const value = item.features[name];
 
-    const ds = dsMap.get(featureValue);
+    const ds = dsMap.get(value);
     if (!ds) {
-      dsMap.set(featureValue, [item]);
+      dsMap.set(value, [item]);
     } else {
       ds.push(item);
     }
